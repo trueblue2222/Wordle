@@ -19,6 +19,13 @@ public class Board : MonoBehaviour
     private int rowIndex;
     private int columnIndex;
 
+    [Header("States")]
+    public Tile.State emptyState;
+    public Tile.State occupiedState;
+    public Tile.State correctState;
+    public Tile.State wrongSpotState;
+    public Tile.State incorrectState;
+
     private void Awake()
     {
         rows = GetComponentsInChildren<Row>();
@@ -53,10 +60,14 @@ public class Board : MonoBehaviour
         {
             columnIndex = Mathf.Max(columnIndex - 1, 0);
             currentRow.tiles[columnIndex].SetLetter('\0');
+            currentRow.tiles[columnIndex].SetState(emptyState);
         }
         else if (columnIndex >= currentRow.tiles.Length)
         {
-            SubmitRow(currentRow);
+            if (Input.GetKeyDown(KeyCode.Return)) 
+            {
+                SubmitRow(currentRow);
+            }
         }
         else
         {
@@ -65,6 +76,7 @@ public class Board : MonoBehaviour
                 if (Input.GetKeyDown(SUPPORTED_KEYS[i]))
                 {
                     currentRow.tiles[columnIndex].SetLetter((char)SUPPORTED_KEYS[i]);
+                    currentRow.tiles[columnIndex].SetState(occupiedState);
                     columnIndex++;
                     break;
                 }
@@ -80,15 +92,15 @@ public class Board : MonoBehaviour
 
             if (tile.letter == word[i])
             {
-                // correct
+                tile.SetState(correctState);
             }
             else if (word.Contains(tile.letter))
             {
-                // wrong spot
+                tile.SetState(wrongSpotState);
             }
             else
             {
-                // completely wrong
+                tile.SetState(incorrectState);
             }
         }
 
