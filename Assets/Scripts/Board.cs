@@ -56,7 +56,7 @@ public class Board : MonoBehaviour
         }
         else if (columnIndex >= currentRow.tiles.Length)
         {
-            // ...
+            SubmitRow(currentRow);
         }
         else
         {
@@ -69,6 +69,35 @@ public class Board : MonoBehaviour
                     break;
                 }
             }
+        }
+    }
+
+    private void SubmitRow(Row row)
+    {
+        for (int i = 0; i < row.tiles.Length; i++)
+        {
+            Tile tile = row.tiles[i];
+
+            if (tile.letter == word[i])
+            {
+                // correct
+            }
+            else if (word.Contains(tile.letter))
+            {
+                // wrong spot
+            }
+            else
+            {
+                // completely wrong
+            }
+        }
+
+        rowIndex++;
+        columnIndex = 0;
+
+        if (rowIndex >= rows.Length)
+        {
+            enabled = false;
         }
     }
 }
