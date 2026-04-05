@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 public class Board : MonoBehaviour
@@ -26,6 +27,9 @@ public class Board : MonoBehaviour
     public Tile.State wrongSpotState;
     public Tile.State incorrectState;
 
+    [Header("UI")]
+    public TextMeshProUGUI invalidWordText;
+
     private void Awake()
     {
         rows = GetComponentsInChildren<Row>();
@@ -50,8 +54,6 @@ public class Board : MonoBehaviour
     {
         word = solutions[Random.Range(0, solutions.Length)];
         word = word.ToLower().Trim();
-
-        // word = "games";
     }
 
     private void Update()
@@ -63,6 +65,8 @@ public class Board : MonoBehaviour
             columnIndex = Mathf.Max(columnIndex - 1, 0);
             currentRow.tiles[columnIndex].SetLetter('\0');
             currentRow.tiles[columnIndex].SetState(emptyState);
+
+            invalidWordText.gameObject.SetActive(false);
         }
         else if (columnIndex >= currentRow.tiles.Length)
         {
@@ -88,6 +92,12 @@ public class Board : MonoBehaviour
 
     private void SubmitRow(Row row)
     {
+        if (!IsValidWord(row.word))
+        {
+            invalidWordText.gameObject.SetActive(true);
+            return;
+        }
+
         string remaining = word;
 
         for (int i = 0; i < row.tiles.Length; i++)
@@ -135,5 +145,15 @@ public class Board : MonoBehaviour
         {
             enabled = false;
         }
+    }
+
+    private bool IsValidWord(string word)
+    {
+        for (int i = 0; i < validWords.Length; i++)
+        {
+            if (validWords[i] == word) return true;
+        }
+
+        return false;
     }
 }
