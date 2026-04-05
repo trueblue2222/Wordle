@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Board : MonoBehaviour
 {
@@ -29,6 +30,8 @@ public class Board : MonoBehaviour
 
     [Header("UI")]
     public TextMeshProUGUI invalidWordText;
+    public Button newWordButton;
+    public Button tryAgainButton;
 
     private void Awake()
     {
@@ -38,7 +41,22 @@ public class Board : MonoBehaviour
     private void Start()
     {
         LoadData();
+        NewGame();
+    }
+
+    public void NewGame()
+    {
+        ClearBoard();
         SetRandomWord();
+
+        enabled = true;
+    }
+
+    public void TryAgain()
+    {
+        ClearBoard();
+        
+        enabled = true;
     }
 
     private void LoadData()
@@ -138,6 +156,11 @@ public class Board : MonoBehaviour
             }
         }
 
+        if (HasWon(row))
+        {
+            enabled = false;
+        }
+
         rowIndex++;
         columnIndex = 0;
 
@@ -145,6 +168,21 @@ public class Board : MonoBehaviour
         {
             enabled = false;
         }
+    }
+
+    public void ClearBoard()
+    {
+        for (int row = 0; row < rows.Length; row++)
+        {
+            for (int col = 0; col < rows[row].tiles.Length; col++)
+            {
+                rows[row].tiles[col].SetLetter('\0');
+                rows[row].tiles[col].SetState(emptyState);
+            }
+        }
+
+        rowIndex = 0;
+        columnIndex = 0;
     }
 
     private bool IsValidWord(string word)
@@ -155,5 +193,27 @@ public class Board : MonoBehaviour
         }
 
         return false;
+    }
+
+    private bool HasWon(Row row)
+    {
+        for (int i = 0; i < row.tiles.Length; i++)
+        {
+            if (row.tiles[i].state != correctState) return false;
+        }
+
+        return true;
+    }
+
+    private void OnEnable()
+    {
+        tryAgainButton.gameObject.SetActive(false);
+        newWordButton.gameObject.SetActive(false);
+    }
+
+    private void OnDisable()
+    {
+        tryAgainButton.gameObject.SetActive(true);
+        newWordButton.gameObject.SetActive(true);
     }
 }
