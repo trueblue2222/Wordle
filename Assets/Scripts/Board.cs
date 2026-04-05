@@ -51,7 +51,7 @@ public class Board : MonoBehaviour
         word = solutions[Random.Range(0, solutions.Length)];
         word = word.ToLower().Trim();
 
-        word = "games";
+        // word = "games";
     }
 
     private void Update()
